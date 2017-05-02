@@ -64,7 +64,7 @@ angular.module( 'isteven-multi-select', ['ng'] ).directive( 'istevenMultiSelect'
         /* 
          * The rest are attributes. They don't need to be parsed / binded, so we can safely access them by value.
          * - buttonLabel, directiveId, helperElements, itemLabel, maxLabels, orientation, selectionMode, minSearchLength,
-         *   tickProperty, disableProperty, groupProperty, searchProperty, maxHeight, outputProperties
+         *   tickProperty, disableProperty, groupProperty, searchProperty, maxHeight, outputProperties, regexSearch
          */
                                                          
          templateUrl: 
@@ -126,10 +126,15 @@ angular.module( 'isteven-multi-select', ['ng'] ).directive( 'istevenMultiSelect'
             {      
                 // we check by looping from end of input-model
                 $scope.filteredModel = [];
-                var i = 0;
+                var i = 0, re;
 
                 if ( typeof $scope.inputModel === 'undefined' ) {
                     return false;                   
+                }
+                if ( attrs.regexSearch ) {
+                    try {
+                        re = new RegExp( $scope.inputLabel.labelFilter, 'i' );
+                    } catch ( e ) {}
                 }
 
                 for( i = $scope.inputModel.length - 1; i >= 0; i-- ) {
@@ -143,8 +148,11 @@ angular.module( 'isteven-multi-select', ['ng'] ).directive( 'istevenMultiSelect'
                     var gotData = false;
                     if ( typeof $scope.inputModel[ i ][ attrs.groupProperty ] === 'undefined' ) {                        
                         
+                        if ( re && re.exec($scope.inputModel[i][attrs.searchProperty]) ) {
+                            gotData = true;
+                        }
                         // If we set the search-key attribute, we use this loop. 
-                        if ( typeof attrs.searchProperty !== 'undefined' && attrs.searchProperty !== '' ) {
+                        else if ( typeof attrs.searchProperty !== 'undefined' && attrs.searchProperty !== '' ) {
 
                             for (var key in $scope.inputModel[ i ]  ) {
                                 if ( 

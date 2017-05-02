@@ -1,3 +1,5 @@
+This is a Hola fork where you can set `regex-search=1` to use regex filtering rather than normal search.
+
 # AngularJS MultiSelect
 Pure AngularJS directive which creates a dropdown button with multiple or single selections. 
 Doesn't require jQuery and works well with other Javascript libraries. 
